@@ -1,4 +1,5 @@
-export type Lesson = { title: string; content: string };
+export type QuizQuestion = { question:string; options:string[]; correctIndex:number; explanation:string };
+export type Lesson = { title: string; content: string; questions:QuizQuestion[] };
 export type CurriculumModule = { id:number; title:string; phase:string; description:string; duration:string; xpReward:number; lessons:Lesson[]; project?:boolean; projectDescription?:string };
 
 const topics = [
