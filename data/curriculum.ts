@@ -36,12 +36,31 @@ const lessonTemplates = [
 ["Checkpoint","Explain the concept in your own words and identify what you would verify before shipping."]
 ];
 
+const quizBank:QuizQuestion[][] = [
+ [
+  {question:"What should you learn first before styling a web page?",options:["HTML structure","A database","DNS records","An API key"],correctIndex:0,explanation:"HTML gives the page its structure; CSS then controls presentation."},
+  {question:"Which CSS concept controls space inside an element?",options:["Margin","Padding","Route","Fetch"],correctIndex:1,explanation:"Padding is the space between an element's content and its border."},
+  {question:"What is a good AI-assisted coding habit?",options:["Copy without reading","Ask for context-aware explanations","Skip testing","Ignore errors"],correctIndex:1,explanation:"Use AI to accelerate learning, but understand and verify its output."}
+ ],
+ [
+  {question:"What does a JavaScript function let you do?",options:["Group reusable logic","Create a DNS record","Style a button only","Store an API key publicly"],correctIndex:0,explanation:"Functions package reusable behaviour into a callable block."},
+  {question:"Which is best for a value that may change?",options:["A variable","A comment","A CSS class","A URL"],correctIndex:0,explanation:"Variables hold values that your program can read and update."},
+  {question:"What should you do when AI generates JavaScript?",options:["Run it blindly","Read, test and modify it","Never execute it","Delete it"],correctIndex:1,explanation:"Testing and understanding generated code keeps you in control."}
+ ]
+];
+const genericQuiz=(title:string,description:string):QuizQuestion[]=>[
+ {question:`Which statement best describes “${title}”?`,options:[description,"It is only for memorising syntax","It should never be tested","It replaces engineering judgement"],correctIndex:0,explanation:"The goal is to understand the concept well enough to apply and verify it."},
+ {question:"What is the best workflow when learning with an AI coding assistant?",options:["Copy everything","Explain the goal, inspect the output, test it, then iterate","Never ask questions","Ignore errors"],correctIndex:1,explanation:"Good AI-assisted engineering is an iterative loop: context, output, verification, refinement."},
+ {question:"You get an unexpected result. What should you do first?",options:["Give up","Delete the project","Inspect the error and reproduce the problem","Assume the AI is correct"],correctIndex:2,explanation:"Reproducing and understanding the failure gives you a reliable path to the fix."}
+];
+
 export const curriculum: CurriculumModule[] = topics.map(([title,phase,description], index) => ({
  id:index+1, title, phase, description, duration:"2 hours", xpReward:50,
  project:[6,12,18,24].includes(index+1),
  projectDescription:[6,12,18,24].includes(index+1) ? description : undefined,
- lessons:lessonTemplates.map(([kind,base]) => ({
+ lessons:lessonTemplates.map(([kind,base], lessonIndex) => ({
    title: kind === "Core idea" ? `${title}: Core idea` : kind === "Build it" ? `${title}: Build it` : kind === "Use AI well" ? `${title}: Use AI well` : `${title}: Checkpoint`,
-   content: `${base} ${description}`
+   content: `${base} ${description}`,
+   questions: quizBank[index] ?? genericQuiz(title,description)
  }))
 }));
