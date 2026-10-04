@@ -1,4 +1,5 @@
-export type QuizQuestion = { question:string; options:string[]; correctIndex:number; explanation:string };
+export type QuestionType = "mcq"|"code"|"debug"|"scenario";
+export type QuizQuestion = { type:QuestionType; question:string; options:string[]; correctIndex:number; explanation:string; code?:string };
 export type Lesson = { title: string; content: string; questions:QuizQuestion[] };
 export type CurriculumModule = { id:number; title:string; phase:string; description:string; duration:string; xpReward:number; lessons:Lesson[]; project?:boolean; projectDescription?:string };
 
@@ -37,24 +38,25 @@ const lessonTemplates = [
 ];
 
 const quizBank:QuizQuestion[][] = [
- [
-  {question:"What should you learn first before styling a web page?",options:["HTML structure","A database","DNS records","An API key"],correctIndex:0,explanation:"HTML gives the page its structure; CSS then controls presentation."},
-  {question:"Which CSS concept controls space inside an element?",options:["Margin","Padding","Route","Fetch"],correctIndex:1,explanation:"Padding is the space between an element's content and its border."},
-  {question:"What is a good AI-assisted coding habit?",options:["Copy without reading","Ask for context-aware explanations","Skip testing","Ignore errors"],correctIndex:1,explanation:"Use AI to accelerate learning, but understand and verify its output."}
- ],
- [
-  {question:"What does a JavaScript function let you do?",options:["Group reusable logic","Create a DNS record","Style a button only","Store an API key publicly"],correctIndex:0,explanation:"Functions package reusable behaviour into a callable block."},
-  {question:"Which is best for a value that may change?",options:["A variable","A comment","A CSS class","A URL"],correctIndex:0,explanation:"Variables hold values that your program can read and update."},
-  {question:"What should you do when AI generates JavaScript?",options:["Run it blindly","Read, test and modify it","Never execute it","Delete it"],correctIndex:1,explanation:"Testing and understanding generated code keeps you in control."}
- ]
+[
+{type:"mcq",question:"What gives a web page its structure?",options:["HTML","CSS","DNS","JSON"],correctIndex:0,explanation:"HTML defines the structure and meaning of page content."},
+{type:"code",question:"Which HTML element creates the main page heading?",options:["<h1>","<p>","<div>","<main>"],correctIndex:0,explanation:"h1 is the primary heading element."},
+{type:"scenario",question:"A button looks wrong. What should you inspect first?",options:["Its HTML/CSS","Your DNS","Your API key","Git history"],correctIndex:0,explanation:"For a visual UI problem, inspect the element structure and its styles first."},
+{type:"debug",question:"Which CSS change fixes this spacing issue?",options:["padding: 16px;","fetch('/api')","const x = 1","git push"],correctIndex:0,explanation:"Padding adds space inside an element."}
+],
+[
+{type:"mcq",question:"What is a JavaScript function?",options:["Reusable logic","A CSS selector","A database","A domain"],correctIndex:0,explanation:"Functions group reusable behaviour."},
+{type:"code",question:"What does this return?","code":"function add(a,b){ return a+b }\nadd(2,3)","options:["5","23","undefined","true"],correctIndex:0,explanation:"The function adds the two numbers, producing 5."},
+{type:"scenario",question:"A value changes after a button click. What should you use?",options:["A variable/state value","DNS","HTML comments","A domain"],correctIndex:0,explanation:"Changing UI data needs a value your program can update."},
+{type:"debug",question:"What is wrong with this condition?","code":"if (age = 18) { ... }","options:["It assigns instead of comparing","Nothing","It needs CSS","It needs fetch"],correctIndex:0,explanation:"Use === when you want to compare values."}
+]
 ];
 const genericQuiz=(title:string,description:string):QuizQuestion[]=>[
- {question:`Which statement best describes “${title}”?`,options:[description,"It is only for memorising syntax","It should never be tested","It replaces engineering judgement"],correctIndex:0,explanation:"The goal is to understand the concept well enough to apply and verify it."},
- {question:"What is the best workflow when learning with an AI coding assistant?",options:["Copy everything","Explain the goal, inspect the output, test it, then iterate","Never ask questions","Ignore errors"],correctIndex:1,explanation:"Good AI-assisted engineering is an iterative loop: context, output, verification, refinement."},
- {question:"You get an unexpected result. What should you do first?",options:["Give up","Delete the project","Inspect the error and reproduce the problem","Assume the AI is correct"],correctIndex:2,explanation:"Reproducing and understanding the failure gives you a reliable path to the fix."}
-];
-
-export const curriculum: CurriculumModule[] = topics.map(([title,phase,description], index) => ({
+{type:"mcq",question:`Which statement best describes “${title}”?`,options:[description,"It is only for memorising syntax","It should never be tested","It replaces engineering judgement"],correctIndex:0,explanation:"Understanding the concept is the goal."},
+{type:"scenario",question:"You are unsure how to implement this concept. What is the best next step?",options:["Ask AI with context and constraints, then verify","Copy random code","Skip testing","Ignore the requirement"],correctIndex:0,explanation:"Good AI-assisted engineering combines clear context with verification."},
+{type:"code",question:"Which mindset is safest when reviewing generated code?",options:["Understand and test it","Trust it automatically","Never read it","Deploy immediately"],correctIndex:0,explanation:"Generated code must still be understood, reviewed and tested."},
+{type:"debug",question:"Something fails unexpectedly. What should you do first?",options:["Reproduce and inspect the error","Delete everything","Change random lines","Assume the tool is wrong"],correctIndex:0,explanation:"Reproducing the issue makes debugging systematic."}
+];export const curriculum: CurriculumModule[] = topics.map(([title,phase,description], index) => ({
  id:index+1, title, phase, description, duration:"2 hours", xpReward:50,
  project:[6,12,18,24].includes(index+1),
  projectDescription:[6,12,18,24].includes(index+1) ? description : undefined,
